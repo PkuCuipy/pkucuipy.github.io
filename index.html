@@ -2,161 +2,872 @@
 <html>
 <head>
 <meta charset='UTF-8'><meta name='viewport' content='width=device-width initial-scale=1'>
-<title>Python装饰器</title></head>
-<body><blockquote><p>2021/2/16</p>
-<p>Feynman Technique</p>
-<p><a href='https://www.zhihu.com/question/26930016/answer/99243411'>Reference</a></p>
-</blockquote>
-<h2>装饰器 @decorator</h2>
-<p>我们有一个函数, 想知道每次调用它都用了多长时间</p>
-<pre><code class='language-python' lang='python'>def my(n):
-    result = 0
-    for i in range(n + 1):
-        result += i
-    return result
-</code></pre>
-<p>一种方法是我们修改函数为这个样子:</p>
-<pre><code class='language-python' lang='python'>def my2(n):
-    
-    print(&quot;accumulate 开始运行&quot;)
-    start = time.time()
-    
-    result = 0
-    for i in range(n + 1):
-        result += i
+<title>index</title><style type='text/css'>html {overflow-x: initial !important;}:root { --bg-color: #ffffff; --text-color: #333333; --select-text-bg-color: #B5D6FC; --select-text-font-color: auto; --monospace: "Lucida Console",Consolas,"Courier",monospace; --title-bar-height: 20px; }
+.mac-os-11 { --title-bar-height: 28px; }
+html { font-size: 14px; background-color: var(--bg-color); color: var(--text-color); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+body { margin: 0px; padding: 0px; height: auto; bottom: 0px; top: 0px; left: 0px; right: 0px; font-size: 1rem; line-height: 1.42857143; overflow-x: hidden; background-image: inherit; background-size: inherit; background-attachment: inherit; background-origin: inherit; background-clip: inherit; background-color: inherit; tab-size: 4; background-position: inherit inherit; background-repeat: inherit inherit; }
+iframe { margin: auto; }
+a.url { word-break: break-all; }
+a:active, a:hover { outline: 0px; }
+.in-text-selection, ::selection { text-shadow: none; background: var(--select-text-bg-color); color: var(--select-text-font-color); }
+#write { margin: 0px auto; height: auto; width: inherit; word-break: normal; word-wrap: break-word; position: relative; white-space: normal; overflow-x: visible; padding-top: 36px; }
+#write.first-line-indent p { text-indent: 2em; }
+#write.first-line-indent li p, #write.first-line-indent p * { text-indent: 0px; }
+#write.first-line-indent li { margin-left: 2em; }
+.for-image #write { padding-left: 8px; padding-right: 8px; }
+body.typora-export { padding-left: 30px; padding-right: 30px; }
+.typora-export .footnote-line, .typora-export li, .typora-export p { white-space: pre-wrap; }
+.typora-export .task-list-item input { pointer-events: none; }
+@media screen and (max-width: 500px) { 
+  body.typora-export { padding-left: 0px; padding-right: 0px; }
+  #write { padding-left: 20px; padding-right: 20px; }
+  .CodeMirror-sizer { margin-left: 0px !important; }
+  .CodeMirror-gutters { display: none !important; }
+}
+#write li > figure:last-child { margin-bottom: 0.5rem; }
+#write ol, #write ul { position: relative; }
+img { max-width: 100%; vertical-align: middle; image-orientation: from-image; }
+button, input, select, textarea { color: inherit; font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; }
+input[type="checkbox"], input[type="radio"] { line-height: normal; padding: 0px; }
+*, ::after, ::before { box-sizing: border-box; }
+#write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write p, #write pre { width: inherit; }
+#write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write p { position: relative; }
+p { line-height: inherit; }
+h1, h2, h3, h4, h5, h6 { break-after: avoid-page; break-inside: avoid; orphans: 4; }
+p { orphans: 4; }
+h1 { font-size: 2rem; }
+h2 { font-size: 1.8rem; }
+h3 { font-size: 1.6rem; }
+h4 { font-size: 1.4rem; }
+h5 { font-size: 1.2rem; }
+h6 { font-size: 1rem; }
+.md-math-block, .md-rawblock, h1, h2, h3, h4, h5, h6, p { margin-top: 1rem; margin-bottom: 1rem; }
+.hidden { display: none; }
+.md-blockmeta { color: rgb(204, 204, 204); font-weight: 700; font-style: italic; }
+a { cursor: pointer; }
+sup.md-footnote { padding: 2px 4px; background-color: rgba(238, 238, 238, 0.7); color: rgb(85, 85, 85); border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; cursor: pointer; }
+sup.md-footnote a, sup.md-footnote a:hover { color: inherit; text-transform: inherit; text-decoration: inherit; }
+#write input[type="checkbox"] { cursor: pointer; width: inherit; height: inherit; }
+figure { overflow-x: auto; margin: 1.2em 0px; max-width: calc(100% + 16px); padding: 0px; }
+figure > table { margin: 0px; }
+tr { break-inside: avoid; break-after: auto; }
+thead { display: table-header-group; }
+table { border-collapse: collapse; border-spacing: 0px; width: 100%; overflow: auto; break-inside: auto; text-align: left; }
+table.md-table td { min-width: 32px; }
+.CodeMirror-gutters { border-right-width: 0px; background-color: inherit; }
+.CodeMirror-linenumber { }
+.CodeMirror { text-align: left; }
+.CodeMirror-placeholder { opacity: 0.3; }
+.CodeMirror pre { padding: 0px 4px; }
+.CodeMirror-lines { padding: 0px; }
+div.hr:focus { cursor: none; }
+#write pre { white-space: pre-wrap; }
+#write.fences-no-line-wrapping pre { white-space: pre; }
+#write pre.ty-contain-cm { white-space: normal; }
+.CodeMirror-gutters { margin-right: 4px; }
+.md-fences { font-size: 0.9rem; display: block; break-inside: avoid; text-align: left; overflow: visible; white-space: pre; background-image: inherit; background-size: inherit; background-attachment: inherit; background-origin: inherit; background-clip: inherit; background-color: inherit; position: relative !important; background-position: inherit inherit; background-repeat: inherit inherit; }
+.md-diagram-panel { width: 100%; margin-top: 10px; text-align: center; padding-top: 0px; padding-bottom: 8px; overflow-x: auto; }
+#write .md-fences.mock-cm { white-space: pre-wrap; }
+.md-fences.md-fences-with-lineno { padding-left: 0px; }
+#write.fences-no-line-wrapping .md-fences.mock-cm { white-space: pre; overflow-x: auto; }
+.md-fences.mock-cm.md-fences-with-lineno { padding-left: 8px; }
+.CodeMirror-line, twitterwidget { break-inside: avoid; }
+.footnotes { opacity: 0.8; font-size: 0.9rem; margin-top: 1em; margin-bottom: 1em; }
+.footnotes + .footnotes { margin-top: 0px; }
+.md-reset { margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: top; text-decoration: none; text-shadow: none; float: none; position: static; width: auto; height: auto; white-space: nowrap; cursor: inherit; line-height: normal; font-weight: 400; text-align: left; box-sizing: content-box; direction: ltr; background-position: 0px 0px; background-repeat: initial initial; }
+li div { padding-top: 0px; }
+blockquote { margin: 1rem 0px; }
+li .mathjax-block, li p { margin: 0.5rem 0px; }
+li blockquote { margin: 1rem 0px; }
+li { margin: 0px; position: relative; }
+blockquote > :last-child { margin-bottom: 0px; }
+blockquote > :first-child, li > :first-child { margin-top: 0px; }
+.footnotes-area { color: rgb(136, 136, 136); margin-top: 0.714rem; padding-bottom: 0.143rem; white-space: normal; }
+#write .footnote-line { white-space: pre-wrap; }
+@media print { 
+  body, html { border: 1px solid transparent; height: 99%; break-after: avoid; break-before: avoid; font-variant-ligatures: no-common-ligatures; }
+  #write { margin-top: 0px; padding-top: 0px; border-color: transparent !important; }
+  .typora-export * { -webkit-print-color-adjust: exact; }
+  .typora-export #write { break-after: avoid; }
+  .typora-export #write::after { height: 0px; }
+  .is-mac table { break-inside: avoid; }
+}
+.footnote-line { margin-top: 0.714em; font-size: 0.7em; }
+a img, img a { cursor: pointer; }
+pre.md-meta-block { font-size: 0.8rem; min-height: 0.8rem; white-space: pre-wrap; background-color: rgb(204, 204, 204); display: block; overflow-x: hidden; background-position: initial initial; background-repeat: initial initial; }
+p > .md-image:only-child:not(.md-img-error) img, p > img:only-child { display: block; margin: auto; }
+#write.first-line-indent p > .md-image:only-child:not(.md-img-error) img { left: -2em; position: relative; }
+p > .md-image:only-child { display: inline-block; width: 100%; }
+#write .MathJax_Display { margin: 0.8em 0px 0px; }
+.md-math-block { width: 100%; }
+.md-math-block:not(:empty)::after { display: none; }
+.MathJax_ref { fill: currentcolor; }
+[contenteditable="true"]:active, [contenteditable="true"]:focus, [contenteditable="false"]:active, [contenteditable="false"]:focus { outline: 0px; box-shadow: none; }
+.md-task-list-item { position: relative; list-style-type: none; }
+.task-list-item.md-task-list-item { padding-left: 0px; }
+.md-task-list-item > input { position: absolute; top: 0px; left: 0px; margin-left: -1.2em; margin-top: calc(1em - 10px); border: none; }
+.math { font-size: 1rem; }
+.md-toc { min-height: 3.58rem; position: relative; font-size: 0.9rem; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; }
+.md-toc-content { position: relative; margin-left: 0px; }
+.md-toc-content::after, .md-toc::after { display: none; }
+.md-toc-item { display: block; color: rgb(65, 131, 196); }
+.md-toc-item a { text-decoration: none; }
+.md-toc-inner:hover { text-decoration: underline; }
+.md-toc-inner { display: inline-block; cursor: pointer; }
+.md-toc-h1 .md-toc-inner { margin-left: 0px; font-weight: 700; }
+.md-toc-h2 .md-toc-inner { margin-left: 2em; }
+.md-toc-h3 .md-toc-inner { margin-left: 4em; }
+.md-toc-h4 .md-toc-inner { margin-left: 6em; }
+.md-toc-h5 .md-toc-inner { margin-left: 8em; }
+.md-toc-h6 .md-toc-inner { margin-left: 10em; }
+@media screen and (max-width: 48em) { 
+  .md-toc-h3 .md-toc-inner { margin-left: 3.5em; }
+  .md-toc-h4 .md-toc-inner { margin-left: 5em; }
+  .md-toc-h5 .md-toc-inner { margin-left: 6.5em; }
+  .md-toc-h6 .md-toc-inner { margin-left: 8em; }
+}
+a.md-toc-inner { font-size: inherit; font-style: inherit; font-weight: inherit; line-height: inherit; }
+.footnote-line a:not(.reversefootnote) { color: inherit; }
+.md-attr { display: none; }
+.md-fn-count::after { content: "."; }
+code, pre, samp, tt { font-family: var(--monospace); }
+kbd { margin: 0px 0.1em; padding: 0.1em 0.6em; font-size: 0.8em; color: rgb(36, 39, 41); background-color: rgb(255, 255, 255); border: 1px solid rgb(173, 179, 185); border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; box-shadow: rgba(12, 13, 14, 0.2) 0px 1px 0px, rgb(255, 255, 255) 0px 0px 0px 2px inset; white-space: nowrap; vertical-align: middle; background-position: initial initial; background-repeat: initial initial; }
+.md-comment { color: rgb(162, 127, 3); opacity: 0.8; font-family: var(--monospace); }
+code { text-align: left; }
+a.md-print-anchor { white-space: pre !important; border: none !important; display: inline-block !important; position: absolute !important; width: 1px !important; right: 0px !important; outline: 0px !important; text-shadow: initial !important; background-position: 0px 0px !important; background-repeat: initial initial !important; }
+.md-inline-math .MathJax_SVG .noError { display: none !important; }
+.html-for-mac .inline-math-svg .MathJax_SVG { vertical-align: 0.2px; }
+.md-math-block .MathJax_SVG_Display { text-align: center; margin: 0px; position: relative; text-indent: 0px; max-width: none; max-height: none; min-height: 0px; min-width: 100%; width: auto; overflow-y: hidden; display: block !important; }
+.MathJax_SVG_Display, .md-inline-math .MathJax_SVG_Display { width: auto; margin: inherit; display: inline-block !important; }
+.MathJax_SVG .MJX-monospace { font-family: var(--monospace); }
+.MathJax_SVG .MJX-sans-serif { font-family: sans-serif; }
+.MathJax_SVG { display: inline; font-style: normal; font-weight: 400; line-height: normal; zoom: 90%; text-indent: 0px; text-align: left; text-transform: none; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; direction: ltr; max-width: none; max-height: none; min-width: 0px; min-height: 0px; border: 0px; padding: 0px; margin: 0px; }
+.MathJax_SVG * { transition: none; }
+.MathJax_SVG_Display svg { vertical-align: middle !important; margin-bottom: 0px !important; margin-top: 0px !important; }
+.os-windows.monocolor-emoji .md-emoji { font-family: "Segoe UI Symbol", sans-serif; }
+.md-diagram-panel > svg { max-width: 100%; }
+[lang="flow"] svg, [lang="mermaid"] svg { max-width: 100%; height: auto; }
+[lang="mermaid"] .node text { font-size: 1rem; }
+table tr th { border-bottom-width: 0px; }
+video { max-width: 100%; display: block; margin: 0px auto; }
+iframe { max-width: 100%; width: 100%; border: none; }
+.highlight td, .highlight tr { border: 0px; }
+mark { background-color: rgb(255, 255, 0); color: rgb(0, 0, 0); background-position: initial initial; background-repeat: initial initial; }
+.md-html-inline .md-plain, .md-html-inline strong, mark .md-inline-math, mark strong { color: inherit; }
+mark .md-meta { color: rgb(0, 0, 0); opacity: 0.3 !important; }
+@media print { 
+  .typora-export h1, .typora-export h2, .typora-export h3, .typora-export h4, .typora-export h5, .typora-export h6 { break-inside: avoid; }
+}
+.md-diagram-panel .messageText { stroke: none !important; }
+.md-diagram-panel .start-state { fill: var(--node-fill); }
+.md-diagram-panel .edgeLabel rect { opacity: 1 !important; }
+.md-require-zoom-fix foreignObject { font-size: var(--mermaid-font-zoom); }
 
-    end = time.time()
-    print(&quot;accumulate 结束运行&quot;)
-    print(f&quot;花费时间为{int(end-start)}ms&quot;)
+
+/*
+    这个假期没少折腾 Typora 的 CSS 样式
+    搞来搞去发现审美是个循环, 主要就是爱折腾.
+    不吐槽自己了.
+    这个主题的模板仍然是 github.css , 
+    并且参考注释更为清晰的 vintage.css
+    这里说一下这次以自己命名的主题要做什么, 
+    包括一些笔记.
     
-    return result
-</code></pre>
-<p>你的舍友也有一个函数, 想让你帮忙测速:</p>
-<pre><code class='language-python' lang='python'>def gauss(n):
-    result = (1 + n) * n / 2;
-    return result
-</code></pre>
-<p>我们当然也可以再用上面的方法修改函数, 来实现测速. 
-不过这既破坏了原函数本身, 而且每当遇到一个新的函数都要修改, 太麻烦了!
-然而, 我们可以定义一个 calc_time() 闭包函数, 它能实现给传入的函数前后增加计时的功能:</p>
-<pre><code class='language-python' lang='python'>def calc_time(func):
-    
-    def func2(*args, **kwargs):
-        
-        print(f&quot;{func.__name__} 开始运行&quot;)
-        start = time.time()
-        
-        return_value = func(*args, **kwargs)
-        
-        end = time.time()
-        print(f&quot;{func.__name__} 结束运行&quot;)
-        print(f&quot;花费时间为{int(end-start)}ms&quot;)
-        
-        return return_value
-    
-    return func2
-</code></pre>
-<p>我们用这个闭包来得到新的带测速功能的函数, 然后调用新得到的函数即可:</p>
-<pre><code class='language-python' lang='python'># 得到新的函数
-new_my = calc_time(my)			
-new_gauss = calc_time(gauss)
+    1. 列表的缩进, 在 Github 主题下, 
+        无序/有序列表相比于正常的文字会靠右, 我改掉了这个.
+    2. 原来的自动折行和软换行的间距为0, 这真的太难看了.
+    3. 看到一个博客的格式很好, 我就基本上抄过来了. 
+        在那个博客中, 代码块和左侧的标号是用一个 table 实现的,
+        相比于 Typora 这个及其复杂的结构真是不知道高到哪里去了x
+        总之为了实现类似的效果, 没少折腾, 最后的结果也蛮丑陋的.
+    4. 标题太大太丑, 减小了大小, 同时增加了css计数器实现自动标号.
+    5. 文本紧接着的 blockquote 很大程度上是对这个文本进行"注释", 
+        针对这种情形缩小间距. 否则有很强的的分离感.
+    6. 改用 Google 的 Noto 字体, 而非苹果的 PingFang 字体. 纯折腾.
+    7. 现在(2021/2/25)的一切都很令人满意了, 少折腾点吧, 还有7天选课截止, 还有10天就开学了.
+    8. 小代码块 0.9em 的字体也确实应该如此, 因为这个字体看起来偏大, 外加外框会让这个元素变得更大
+        尽管如此, 小代码块有点偏下. 因此使用 vertical-align:3% 来修正. 
+        顺便发现浏览器微调这个数据时, 可以使用上下方向键来以 1% 为间隔进行微调.
+        因此顺便发现自己之前一个<误区>, 即以为只有某几个特殊的百分比才会有调整. 
+        而事实上是都有, 只不过有的时候特别细微, 甚至导致在一些元素上渲染没变, 但在另外一些元素上就能看出差异.
+        然而如果按住 option 来进行 0.1% 间隔微调, 则发现确实是在某些格子时发生跳变. anyway.
 
-# 调用并测速
-new_my(10**7)
-new_gauss(10**7)
-</code></pre>
-<p>这就是&quot;装饰&quot;的基本思想了. 不过在 python 中, 上面的写法有时可以简化. 我们只需要在定义函数时写成这个样子:</p>
-<pre><code class='language-python' lang='python'>@calc_time
-def foo(n):
-    result = sum(range(n))
-    return result
-</code></pre>
-<p>这就等价于:</p>
-<pre><code class='language-python' lang='python'>def foo(n):
-    result = sum(range(n))
-    return result
-foo = calc_time(foo)
-</code></pre>
-<p>也就是说如果我们只想得到被装饰后的函数, 那么这种通过 <code>@</code> 的写法可以简化代码. 
-也就是说,</p>
-<pre><code class='language-python' lang='python'>@dec
-def f():
-	pass
-</code></pre>
-<p>就等价于</p>
-<pre><code class='language-python' lang='python'>def f():
-	pass
-f = dec(f)
-</code></pre>
-<p>单从语法的角度看, <code>@</code> 右边的东西只要是一个函数就可以.</p>
-<p>所以如果我们见到下述写法:</p>
-<pre><code class='language-python' lang='python'>@f(x, y)
-def g():
-	pass
-</code></pre>
-<p>其实就是因为 <code>f(x, y)</code> 返回值是一个函数, 然后被 <code>@</code> 的其实是 <code>f(x, y)</code> 的返回值.</p>
-<p>举个例子: 比如我们想定制上述测速装饰器的功能, 可以选择是否打印&quot;开始运行&quot;和&quot;结束运行&quot;这两行字. 可以改写如下:</p>
-<pre><code class='language-python' lang='python'>def calc_time(show_start, show_end):
-    def decorator(func):
-        def func2(*args, **kwargs):
-            if show_start:							
-                print(f&quot;{func.__name__} 开始运行&quot;)
-            import time
-            start = time.time()
-            return_value = func(*args, **kwargs)
-            end = time.time()
-            if show_end:							
-                print(f&quot;{func.__name__} 结束运行&quot;)
-            print(f&quot;花费时间为{int(end-start)}ms&quot;)
-            return return_value
-        return func2
-    return decorator
+*/
 
-@calc_time(show_start=True, show_end=False)
-def test(N):
-    s = 1
-    for i in range(N):
-        s += 1
 
-test(10**7)
-</code></pre>
-<p>也就是说 <code>calc_time(show_start=True, show_end=False)</code> 返回值是 decorator 函数, 然后相当于 <code>@decorator</code></p>
-<p>最后说一句, 虽然我们用测速这个话题引出, 但这个语法本身有很多别的用法.</p>
-<p>比如我们只是想把某个def块中的东西作为一个代码块来执行:</p>
-<pre><code class='language-python' lang='python'>def just_run(f):
-    f()
-    return &quot;Done!&quot;
+:root {
+    /* 这是 Typora 其他文件用到的变量 */
+    --control-text-color: #777;
+    --side-bar-bg-color: #fafafa;
+    /* 这些是这个文件自己用到的变量 */
+    --text-color: #555555;                  /* 正常文本的颜色 */
+    --bigcode-bg-color: #f7f7f7;            /* 大代码块的背景颜色 */
+    --smallcode-bg-color: #eeeeee;          /* 小代码块的背景颜色 */
+    --smallcode-text-color: var(--text-color);       /* 小代码块的文本颜色 */
+    --blockquote-bg-color: #dfe2e541;       /* 半透明好调节, 而且可以让多层嵌套时颜色逐层加深 */         
+    --hr-color: #e2e4e8;                    /* 水平分割线(Horizontal Rule)的颜色 */     
+    --blockquote-text-color: #666666;       /* 被引用文本的颜色 */
+    --code-font: "Menlo";                     /* 代码字体 */
+    --google-font: "Noto Sans CJK SC";
+    --apple-font: "Helvetica Neue", "PingFang SC";
+    --ui-bg-color: #fafafa;
+    --highlight-color: #ffe3c3;
+    --big-border-radius: 5px;
+    --small-border-radius: 1px;
+    --border-color: #e7eaed;
+    --underline-color: #cccccc;
+}
 
-@just_run
-def just_a_block_of_code():
-    print(&quot;code line 1&quot;)
-    print(&quot;code line II&quot;)
-    print(&quot;code line 三&quot;)
-</code></pre>
-<p>或者比如 Flask 框架中, 我们可能会在代码中这么写:</p>
-<pre><code class='language-python' lang='python'>@app.route(&quot;/GO&quot;, methods=[&quot;POST&quot;])
-def Remainder():
-    numIn = int(request.form[&quot;numIn&quot;])
-    Mode = request.form.getlist(&quot;MODE&quot;)
-    Msg = &quot;&quot;
-    for divisor in Mode:
-        tempDivisor = int(divisor)
-        Msg += f&quot;{numIn}除以{tempDivisor}的余数是{numIn % tempDivisor}!&lt;br&gt;&quot;
-    return render_template(&quot;remainder.html&quot;, rtnMsg=Msg)
-</code></pre>
-<p>然后我们去翻看 app.route 的源代码:</p>
-<pre><code class='language-python' lang='python'>def route(self, rule, **options):
-    
-    def decorator(f):
-        endpoint = options.pop(&quot;endpoint&quot;, None)
-        self.add_url_rule(rule, endpoint, f, **options)
-        return f
 
-    return decorator
-</code></pre>
-<p>所以上面我们的代码中的 <code>@app.route(&quot;/GO&quot;, methods=[&quot;POST&quot;])</code> 就相当于:</p>
-<pre><code class='language-python' lang='python'>app.add_url_rule(&#39;/GO&#39;, None, Remainder, {&quot;methods&quot;:[&quot;POST&quot;]})
-</code></pre>
-<p>&nbsp;</p>
+/******************************* 这里定义一些全局信息 ******************************/
+
+html {
+    font-size: 17px;
+}
+html, body, #write {
+    background: white;
+    font-family: var(--google-font), var(--apple-font);
+    font-weight: normal;
+    color: var(--text-color);   
+    line-height: 1.6;   /* General line-height. Specified in specific elements */
+    margin: auto;
+  	padding: 30px;
+    padding-bottom: 100px;
+}
+
+/* 当屏幕足够大时, 扩展 max-width 以更好地适应屏幕 */
+#write {
+    max-width: 860px;
+}
+@media only screen and (min-width: 1400px) {    
+	#write {
+		max-width: 1024px;
+	}
+}
+@media only screen and (min-width: 1800px) {
+	#write {
+		max-width: 1200px;
+	}
+}
+
+/******************************* 这里定义水平线的样式 ******************************/
+
+hr {
+    /* margin: 3em auto; */
+    width: 100%;
+    max-width: 100%;
+    border: none;
+    border-top: 1px solid var(--hr-color);
+}
+
+/******************************* 这里定义链接的样式 *******************************/
+
+a {
+    color: var(--text-color);
+    text-decoration: none;
+    border-bottom: 1px solid var(--underline-color);
+    padding-bottom: 0.5px;
+}
+/* 鼠标移动到上面时颜色加深 */
+a:hover {
+    color: #222222;
+    border-bottom: 1px solid #222222;
+}
+
+/******************************* 这里定义[ToC]的样式 *******************************/
+
+.md-toc-content {
+    counter-reset: h1toc;
+}
+.md-toc-h1 {
+    font-size: 1.1rem;
+    margin-left: 0;
+    counter-reset: h2toc;
+}
+.md-toc-h2 {
+    font-size: 1.05rem;
+    margin-left: 2rem;
+    counter-reset: h3toc;
+}
+.md-toc-h3 {
+    font-size: 1.0rem;
+    margin-left: 3rem;
+    counter-reset: h4toc;
+}
+.md-toc-h4 {
+    font-size: 0.95rem;
+    margin-left: 6rem;
+}
+.md-toc-h1:before {
+    color: #285e8e;
+    white-space: pre-wrap;
+    counter-increment: h1toc;
+    content: "§" counter(h1toc) "  "
+}
+.md-toc-h2:before {
+    color: #285e8e;
+    white-space: pre-wrap;
+    counter-increment: h2toc;
+    content: counter(h1toc) "."counter(h2toc) "  "
+}
+.md-toc-h3:before {
+    color: #285e8e;
+    white-space: pre-wrap;
+    counter-increment: h3toc;
+    content: counter(h1toc) "."counter(h2toc) "."counter(h3toc) "  "
+}
+.md-toc-h4:before {
+    color: #285e8e;
+    white-space: pre-wrap;
+    content: "[ ";
+}
+.md-toc-h4:after {
+    color: #285e8e;
+    white-space: pre-wrap;
+    content: " ]";
+}
+
+.md-toc-h1 .md-toc-inner,
+.md-toc-h2 .md-toc-inner,
+.md-toc-h3 .md-toc-inner,
+.md-toc-h4 .md-toc-inner {
+    margin-left: 0;
+    border-style: none; 
+    font-weight: normal;
+}
+.md-toc-h1 .md-toc-inner:hover,
+.md-toc-h2 .md-toc-inner:hover,
+.md-toc-h3 .md-toc-inner:hover,
+.md-toc-h4 .md-toc-inner:hover,
+.md-toc-h5 .md-toc-inner:hover,
+.md-toc-h6 .md-toc-inner:hover {
+    text-decoration: none;
+} 
+
+
+
+/******************************* 这里定义[任务列表]的样式 ****************************/
+
+.md-task-list-item > input {
+    margin-left: -1.3em;
+}
+
+/******************************* 这里定义[代码]的样式 ******************************/
+
+h1 tt, h1 code,
+h2 tt, h2 code,
+h3 tt, h3 code,
+h4 tt, h4 code,
+h5 tt, h5 code,
+h6 tt, h6 code {
+    font-size: inherit;
+}
+
+.md-fences {
+    background-color: #f0f2f3;
+    font-family: var(--code-font);     
+    margin-bottom: 15px;
+    margin-top: 15px;
+    border-radius: var(--small-border-radius);
+}
+code {                            
+    background-color: var(--smallcode-bg-color);    
+    color: var(--smallcode-text-color);
+    padding: 2px 4px 2px 4px;
+    margin: 0 2px 0 2px;
+    font-family: var(--code-font);
+    border-radius: var(--big-border-radius);
+    font-size: 0.9em;
+    vertical-align: 3%;
+}
+.CodeMirror-sizer {
+    padding-top: 8px;
+    padding-bottom: 8px !important;
+    background-color: var(--bigcode-bg-color);  
+    border-top-right-radius: var(--small-border-radius);
+    border-bottom-right-radius: var(--small-border-radius);
+}
+.CodeMirror-linenumber.CodeMirror-gutter-elt {
+    padding-right: 1px !important;
+    color: #889194 !important;
+}
+/* 默认是继承背景色, 会导致边角处越过圆弧线 */
+.CodeMirror-scroll .CodeMirror.cm-s-inner{
+    background-color: transparent;
+}
+.CodeMirror-line {
+    padding-left: 10px !important;
+}
+/* 取消默认的竖线, 并撑大行号栏 */
+.CodeMirror-gutters {
+    border-right-style: none;   
+    padding-right: 4px;
+    padding-left: 4px;
+}
+/* 语言选择提示框 */
+.code-tooltip {
+    box-shadow: 0 1px 1px 0 rgba(0,28,36,.3);
+    border-top: 1px solid #eef2f2;
+}
+
+
+/******************************* 这里定义大纲的样式 ******************************/
+
+/* 侧边栏大纲的计数器标号 */
+.sidebar-content {counter-reset: sb_cnt_h1;}
+.outline-h1 {counter-reset: sb_cnt_h2;}
+.outline-h2 {counter-reset: sb_cnt_h3;}
+.outline-h1>.outline-item>.outline-label:before {
+    counter-increment: sb_cnt_h1;
+    content: "§" counter(sb_cnt_h1, upper-alpha) ". ";
+}
+.outline-h2>.outline-item>.outline-label:before {
+    counter-increment: sb_cnt_h2;
+    content: counter(sb_cnt_h2) ". ";
+}
+.outline-h3>.outline-item>.outline-label:before {
+    counter-increment: sb_cnt_h3;
+    content: counter(sb_cnt_h2) "."counter(sb_cnt_h3) ". ";
+}
+
+
+/******************************* 这里定义标题的样式 ******************************/
+
+h1, h2, h3, h4, h5, h6 {
+    position: relative;
+    margin-top: 1.5rem;
+    margin-bottom: 0rem;    
+    font-weight: 500;
+    cursor: text;
+}
+h1 {
+    text-align: center;
+    font-size: 1.6rem;
+    padding-bottom: 0.3rem;  
+}
+h2 {
+    font-size: 1.3rem;
+    color: rgb(53, 94, 138);
+}
+h3 {
+    font-size: 1.1rem;
+}
+h4 {
+    margin-top: 1rem;
+    font-size: 1rem;
+}
+h4:before{
+    content: "[ ";
+    color:rgb(53, 94, 138)
+}
+h4::after{
+    content: " ]";
+    color:rgb(53, 94, 138)
+}
+h5, h6 {
+    font-size: 1rem;
+    color: red;
+    text-decoration: line-through;
+}
+
+/* 微调, 关于 h2 和 h3 之间的间距 */
+h2 + h3 {
+    margin-top: 1rem;
+}
+
+
+/* 微调, 关于标题和功能块的间距 */
+blockquote + h2, 
+.md-fences + h2, 
+.mathjax-block + h2 {
+    margin-top: 2rem;
+}
+blockquote + h3, 
+.md-fences + h3, 
+.mathjax-block + h3 {
+    margin-top: 2rem;
+}
+
+
+
+/* 标题计数器 */
+body {counter-reset: cnt_h1;}
+h1 {counter-reset: cnt_h2;} 
+h2 {counter-reset: cnt_h3;} 
+h1:before {
+    counter-increment: cnt_h1;
+    /* content: "§" counter(cnt_h1) "  "; */
+    font-weight: normal;
+}
+h2:before {
+    counter-increment: cnt_h2;
+    /* content: counter(cnt_h2) ". "; */
+    font-weight: normal;
+    color: inherit;
+}
+h3:before {
+    counter-increment: cnt_h3;
+    /* content: counter(cnt_h2) "." counter(cnt_h3) ". "; */
+    font-weight: normal;
+    color: inherit;
+}
+
+/******************************* 这里定义列表的样式 ******************************/
+
+p, blockquote, ul, ol, dl, table{
+    margin: 0.8em 0;
+}
+li>ol, li>ul {
+    margin: 0 0;
+}
+li p.first {
+    display: inline-block;
+}
+ul {
+    padding-left: 20px;         
+}
+ol {
+    padding-left: 23px;
+    /* list-style-type: upper-roman; */
+}
+/* ol ol {
+    list-style-type: lower-roman;
+} */
+ul:first-child, ol:first-child {
+    margin-top: 0;
+}
+ul:last-child, ol:last-child {
+    margin-bottom: 0;
+}
+/* 列表中的段落不设置边界了, 因为间距太大太丑. */
+li p {
+    margin: 0 0;
+}
+/* 文本紧邻列表时, 间距减小 */
+div#write > p + ol, 
+div#write > p + ul {
+    margin-top: -0.4rem;
+}
+/* 小标题(h4)紧邻列表时, 间距减小 */
+h4 + ol, h4 + ul {
+    margin-top: 0.5rem;
+}
+
+/******************************* 这里定义段落的样式 ******************************/
+
+/* 折行和软换行的行间距增大 */
+p {
+    line-height: 2.0;
+}
+/* 对于导出的 html 或 pdf 而言, 某些位置的 p 被优化掉了, 取而代之的是 span */
+span {
+    line-height: 2.0;
+}
+.md-fences span {
+    line-height: 1.6;
+}
+/* 小标题(h4)紧邻段落时, 间距减小 */
+h4 + p {
+    margin-top: 0.4rem;
+}
+
+
+/******************************* 这里定义图片的样式 ******************************/
+
+/* 图片外加圆角边框 */
+img {
+    border-radius: var(--small-border-radius);
+    border: 2px solid  rgba(0,0,0,0.1);
+    padding: 0 0 0 0;
+}
+
+/******************************* 这里定义引用块的样式 ******************************/
+
+blockquote {
+    border-left: 7px solid #ddd;
+    padding: 5px 10px 3px 14px;  
+    background-color: var(--blockquote-bg-color);
+    color: var(--blockquote-text-color);  
+    border-top-right-radius: var(--big-border-radius);  
+    border-bottom-right-radius: var(--big-border-radius);  
+    margin-left: 1px;
+}
+/* 多嵌套时, 右侧不再继续缩小 */
+blockquote blockquote {   
+    padding-right: 0;                               
+}
+/* blockquote 紧邻文本时, 相应边界减小 */
+p + blockquote {                                    
+    margin-top: 0.25rem;
+}
+/* 引用块内的最后一个大公式块/图片/代码块/引用块的下边距增大 */
+blockquote .mathjax-block:last-child, 
+blockquote img:last-child,
+blockquote .md-fences:last-child,
+blockquote blockquote:last-child {
+    margin-bottom: 1.111rem !important;
+}
+
+
+
+/******************************* 这里定义表格的样式 ******************************/
+
+table {
+    padding: 0;
+    word-break: initial;
+}
+table tr {
+    margin: 0;
+    padding: 0;
+}
+table tr:nth-child(2n), thead {
+    background-color: var(--bigcode-bg-color);
+}
+table tr th {
+    font-weight: bold;
+    border-bottom: 0;
+    margin: 0;
+    padding: 6px 13px;
+}
+table tr td {
+    margin: 0;
+    padding: 6px 13px;
+}
+table tr th:first-child,
+table tr td:first-child {
+    margin-top: 0;
+}
+table tr th:last-child,
+table tr td:last-child {
+    margin-bottom: 0;
+}
+
+/* 取消表格占用整个宽度, 但具有最小宽度(通过对 th td 设置) */
+table {width: 0;}
+th, td {
+    width: 5em;
+    white-space: nowrap;    
+}
+
+/* 
+    设置表格 table 为圆角
+    并不是想象中那么简单! 这是因为 border-collapse: collapse 与 border-radius 冲突
+    解决方法:
+    - 由于我们为了设置 border-radius 所以必须设置 border-collapse: separate
+    - 这样的话, 单元格交界处就会出现两个线, 变粗变难看.
+    - 所以我们需要仔细使用 CSS 选择器, 为不同位置的单元格设置不同的边框绘制"职责", 
+    - 让他们"共同完成"这个表格的所有边框, 且每个交界处只有一条线.
+*/
+table {
+    border-collapse: separate;
+}
+table thead tr th {
+    border-top: 1px solid var(--border-color);
+}
+table tr th, table tr td {
+    border-right: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+table tr th:first-child, table tr td:first-child {
+    border-left: 1px solid var(--border-color);
+}
+/* 分别设置 [左上, 右上, 右下, 左下] 的圆角 */
+table tr:first-child th:first-child {border-top-left-radius: var(--big-border-radius);}   
+table tr:first-child th:last-child {border-top-right-radius: var(--big-border-radius);}
+table tr:last-child td:last-child {border-bottom-right-radius: var(--big-border-radius);}
+table tr:last-child td:first-child {border-bottom-left-radius: var(--big-border-radius);}
+
+
+
+/*************************** 这里修改一些杂项的样式 **************************/
+
+/* 修改高亮的颜色, 以及柔和的边框, 类似小代码块<code> */
+mark {
+    background-color: var(--highlight-color);
+    border-radius: var(--big-border-radius); 
+}
+/* 修改下划线的实现方式(默认下划线->下边框) 提供更多定制空间 */
+u {
+    text-decoration: none;
+    border-bottom: 1px solid var(--underline-color);
+    padding-bottom: 0.5px;
+}
+/* <斜体>修改右侧对齐量, 防止最右侧的斜体字"插进"正体字里 */
+em {
+    margin-right: 2px;
+}
+/* 删除线的微调 */
+del {
+    /* text-decoration-color: #285e8e; */
+    text-decoration-thickness: 2px;
+    color: var(--blockquote-text-color);
+    padding-left: 0.2rem;
+    padding-right: 0.2rem;
+}
+
+/* 内联公式有点偏下 */
+/* .inline-math-svg {
+    vertical-align: 3%;
+} */
+/* emoji 有点偏下 */
+.md-emoji-span {
+    vertical-align: 7%;
+}
+
+/* 侧边栏字号也根据 html 字号变化 */
+#typora-sidebar {
+    font-size: 0.89rem !important;
+}
+
+/* 侧边栏行高有点高 */
+#typora-sidebar span {
+    line-height: 1.5;
+}
+
+/*************************** 这里定义打印或者导出PDF的样式 **************************/
+
+@media print {
+    html {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    #write {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    table, pre {
+        page-break-inside: auto !important;   
+    }
+    pre {
+        word-wrap: break-word;
+    }
+    /* .typora-export p {
+        font-size: 13px;
+    } */
+
+}
+
+
+/*************************** 下面的是从 github.css 直接复制过来的, 不太清楚具体做了什么 **************************/
+
+
+#write pre.md-meta-block {
+	padding: 1rem;
+    font-size: 85%;
+    line-height: 1.45;
+    background-color: #f7f7f7;
+    border: 0;
+    border-radius: var(--big-border-radius); 
+    color: #777777;
+    color: red;
+    margin-top: 0 !important;
+}
+
+.mathjax-block>.code-tooltip {
+	bottom: .375rem;
+}
+.md-mathjax-midline {
+    background-color: var(--ui-bg-color); 
+}
+
+#write>h3.md-focus:before{
+	left: -1.5625rem;
+	top: .375rem;
+}
+#write>h4.md-focus:before{
+	left: -1.5625rem;
+	top: .285714286rem;
+}
+#write>h5.md-focus:before{
+	left: -1.5625rem;
+	top: .285714286rem;
+}
+#write>h6.md-focus:before{
+	left: -1.5625rem;
+	top: .285714286rem;
+}
+.md-image>.md-meta {
+    border: 1px solid #ddd;                           
+    border-radius: var(--big-border-radius);      
+    padding: 2px 0px 0px 4px;
+    font-size: 0.9em;
+    color: inherit;
+}
+
+.md-tag {
+    color: #a7a7a7;
+    opacity: 1;
+}
+
+.md-toc { 
+    margin-top:20px;
+    padding-bottom:20px;
+}
+
+.sidebar-tabs {
+    border-bottom: none;
+}
+
+#typora-quick-open {
+    border: 1px solid #ddd;
+    background-color: #f8f8f8;
+}
+
+#typora-quick-open-item {
+    background-color: var(--ui-bg-color); 
+    border-color: #FEFEFE #e5e5e5 #e5e5e5 #eee;
+    border-style: solid;
+    border-width: 1px;
+}
+
+
+.on-focus-mode blockquote {
+    border-left-color: rgba(85, 85, 85, 0.12);
+}
+
+header, .context-menu, .megamenu-content, footer{
+    font-family: "Segoe UI", "Arial", sans-serif;
+}
+
+.file-node-content:hover .file-node-icon,
+.file-node-content:hover .file-node-open-state{
+    visibility: visible;
+}
+
+.mac-seamless-mode #typora-sidebar {
+    background-color: var(--ui-bg-color);
+}
+
+.md-lang {
+    color: #b4654d;
+}
+
+.html-for-mac .context-menu {
+    --item-hover-bg-color: #E6F0FE;
+}
+
+#md-notification .btn {
+    border: 0;
+}
+
+.dropdown-menu .divider {
+    border-color: #e5e5e5;
+}
+
+.ty-preferences .window-content {
+    background-color: var(--ui-bg-color);  
+}
+
+.ty-preferences .nav-group-item.active {
+    color: white;
+    background: #999;
+}
+
+
+ :root {--mermaid-font-zoom:1em ;} 
+</style>
+</head>
+<body class='typora-export'>
+<div id='write'  class=''><h1><a name="welcome" class="md-header-anchor"></a><span>Welcome.</span></h1><ul><li><a href='./md_notes/mirage_tank_20210318.html'><span>双层 PNG 图研究</span></a></li></ul><p>&nbsp;</p></div>
 </body>
 </html>
