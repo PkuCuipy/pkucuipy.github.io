@@ -222,7 +222,7 @@ mark .md-meta { color: rgb(0, 0, 0); opacity: 0.3 !important; }
 /******************************* 这里定义一些全局信息 ******************************/
 
 html {
-    font-size: 17px;
+    font-size: 13px;
 }
 html, body, #write {
     background: white;
@@ -366,8 +366,8 @@ h6 tt, h6 code {
 .md-fences {
     background-color: #f0f2f3;
     font-family: var(--code-font);     
-    margin-bottom: 15px;
-    margin-top: 15px;
+    margin-bottom: 0.9375rem;
+    margin-top: 0.9375rem;
     border-radius: var(--small-border-radius);
 }
 code {                            
@@ -381,8 +381,8 @@ code {
     vertical-align: 3%;
 }
 .CodeMirror-sizer {
-    padding-top: 8px;
-    padding-bottom: 8px !important;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem !important;
     background-color: var(--bigcode-bg-color);  
     border-top-right-radius: var(--small-border-radius);
     border-bottom-right-radius: var(--small-border-radius);
@@ -396,7 +396,7 @@ code {
     background-color: transparent;
 }
 .CodeMirror-line {
-    padding-left: 10px !important;
+    padding-left: 0.625rem !important;
 }
 /* 取消默认的竖线, 并撑大行号栏 */
 .CodeMirror-gutters {
@@ -406,7 +406,8 @@ code {
 }
 /* 语言选择提示框 */
 .code-tooltip {
-    box-shadow: 0 1px 1px 0 rgba(0,28,36,.3);
+    /* box-shadow: 0 1px 1px 0 rgba(0,28,36,.3); */
+    box-shadow: none;
     border-top: 1px solid #eef2f2;
 }
 
@@ -517,17 +518,17 @@ h3:before {
 p, blockquote, ul, ol, dl, table{
     margin: 0.8em 0;
 }
-li>ol, li>ul {
+li > ol, li > ul {
     margin: 0 0;
 }
 li p.first {
     display: inline-block;
 }
 ul {
-    padding-left: 20px;         
+    padding-left: 1.25rem;         
 }
 ol {
-    padding-left: 23px;
+    padding-left: 1.4375rem;
     /* list-style-type: upper-roman; */
 }
 /* ol ol {
@@ -545,8 +546,14 @@ li p {
 }
 /* 文本紧邻列表时, 间距减小 */
 div#write > p + ol, 
-div#write > p + ul {
+div#write > p + ul{
     margin-top: -0.4rem;
+}
+/* blockquote 中文本紧邻列表时, 间距减小, 
+    这里减得少, 是因为 li > ol/ul 的 margin: 0 0 */
+blockquote > p + ol, 
+blockquote > p + ul{
+    margin-top: 0rem;
 }
 /* 小标题(h4)紧邻列表时, 间距减小 */
 h4 + ol, h4 + ul {
@@ -584,8 +591,8 @@ img {
 /******************************* 这里定义引用块的样式 ******************************/
 
 blockquote {
-    border-left: 7px solid #ddd;
-    padding: 5px 10px 3px 14px;  
+    border-left: 0.42rem solid #ddd;
+    padding: 0.3125rem 0.625rem 0.1875rem 0.875rem;  
     background-color: var(--blockquote-bg-color);
     color: var(--blockquote-text-color);  
     border-top-right-radius: var(--big-border-radius);  
@@ -627,11 +634,11 @@ table tr th {
     font-weight: bold;
     border-bottom: 0;
     margin: 0;
-    padding: 6px 13px;
+    padding: 0.375rem 0.8125rem;
 }
 table tr td {
     margin: 0;
-    padding: 6px 13px;
+    padding: 0.375rem 0.8125rem;
 }
 table tr th:first-child,
 table tr td:first-child {
@@ -800,8 +807,8 @@ del {
 }
 
 .md-toc { 
-    margin-top:20px;
-    padding-bottom:20px;
+    margin-top: 1.25rem;
+    padding-bottom: 1.25rem;
 }
 
 .sidebar-tabs {
@@ -868,6 +875,6 @@ header, .context-menu, .megamenu-content, footer{
 </style>
 </head>
 <body class='typora-export'>
-<div id='write'  class=''><h1><a name="welcome" class="md-header-anchor"></a><span>Welcome.</span></h1><ul><li><a href='./md_notes/mirage_tank_20210318.html'><span>双层 PNG 图研究</span></a></li></ul><p>&nbsp;</p></div>
+<div id='write'  class=''><h1><a name="welcome" class="md-header-anchor"></a><span>Welcome.</span></h1><h2><a name="文章列表" class="md-header-anchor"></a><span>文章列表</span></h2><ul><li><p><strong><span>CS:APP 阅读笔记系列</span></strong></p><ul><li><a href='./pdfs/ics_notes/ics_c1_2.pdf'><span>Chapter 01 &amp; 02</span></a></li><li><a href='./pdfs/ics_notes/ics_c3.pdf'><span>Chapter 03</span></a></li><li><a href='./pdfs/ics_notes/ics_c4.pdf'><span>Chapter 04</span></a></li><li><a href='./pdfs/ics_notes/ics_c5_6.pdf'><span>Chapter 05 &amp; 06</span></a></li><li><a href='./pdfs/ics_notes/ics_c7.pdf'><span>Chapter 07</span></a></li><li><a href='./pdfs/ics_notes/ics_c8_10.pdf'><span>Chapter 08 &amp; 10</span></a></li><li><a href='./pdfs/ics_notes/ics_c9.pdf'><span>Chapter 09</span></a></li><li><a href='./pdfs/ics_notes/ics_c11.pdf'><span>Chapter 11</span></a></li><li><a href='./pdfs/ics_notes/ics_c12.pdf'><span>Chapter 12</span></a></li></ul></li><li><p><mark><strong><a href='./pdfs/mirage_tank.pdf'><span>双层图研究</span></a></strong></mark></p></li><li><p><strong><a href='./pdfs/google_search.pdf'><span>Google 搜索引擎的高级用法</span></a></strong></p></li><li><p><strong><a href='./pdfs/rsa_intro.pdf'><span>RSA 加密算法原理简介</span></a></strong></p></li><li><p><strong><a href='./pdfs/decibel.pdf'><span>分贝(Decibel)</span></a></strong></p></li><li><p><strong><a href='./pdfs/python_decorator.pdf'><span>Python 装饰器到底是什么?</span></a></strong></p></li><li><p><em><span>创作中...</span></em></p></li></ul><p>&nbsp;</p></div>
 </body>
 </html>
